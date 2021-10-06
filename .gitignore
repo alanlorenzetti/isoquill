@@ -1,0 +1,33 @@
+# commit and push script
+addCommitPush.sh
+
+# rproj
+*.Rproj
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.Rproj.user
+.Rhistory
+.Rdata
+
+# folders
+/ccs_12_parts
+/clusters_vs_refGen
+/codan
+/cogent_vs_refGen
+/cupcake
+/data
+/fam_find
+/isoseq_refine_cluster
+/lima
+/plots
+/rem_red
+/remred_vs_refGen
+/vis
