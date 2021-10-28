@@ -9,10 +9,9 @@
 # dataset obtained from similar samples
 
 # requires trimmomatic from bioconda: trimmomatic_env
+# requires lordec from bioconda: lordec_env
 # requires seqtk from bioconda: seqtk_env
-# requires fmlrc (v1) from bioconda: fmlrc2_env
-# requires ropebwt2 from bioconda: fmlrc2_env
-# requires pigz: fmlrc2_env
+# requires pigz: seqtk_env
 
 # setting up num threads
 threads=15
@@ -56,8 +55,41 @@ if [[ ! -d short_read_polish/trimmed ]] ; then
     done
 fi
 
-# activating fmlrc2 env
-conda activate fmlrc2_env
+# activating seqtk env
+conda activate seqtk_env
+
+# subsetting short reads is necessary
+# we cannot use more than 128GB RAM
+# using 1/10 of the reads
+prefixes=`ls short_read_polish/trimmed/*.fq.gz | sed 's/-.*_[12].*.fq.gz//' | sort | uniq`
+for prefix in $prefixes ; do 
+    if [[ -d short_read_polish/trimmed ]] ; then 
+        if [[ ! -f ${prefix}-paired-sub_1.fq.gz || ! -f ${prefix}-paired-sub_2.fq.gz ]] ; then 
+            lines=`unpigz -p $threads -c ${prefix}-paired_1.fq.gz | wc -l`
+            subsample=$((lines/4/10))
+
+            seqtk sample -s 665 ${prefix}-paired_1.fq.gz $subsample | pigz -p $threads -c > ${prefix}-paired-sub_1.fq.gz
+            seqtk sample -s 665 ${prefix}-paired_2.fq.gz $subsample | pigz -p $threads -c > ${prefix}-paired-sub_2.fq.gz
+        fi
+
+        if [[ ! -f ${prefix}-unpaired-sub_1.fq.gz ]] ; then 
+            lines=`unpigz -p $threads -c ${prefix}-unpaired_1.fq.gz | wc -l`
+            subsample=$((lines/4/10))
+
+            seqtk sample -s 665 ${prefix}-unpaired_1.fq.gz $subsample | pigz -p $threads -c > ${prefix}-unpaired-sub_1.fq.gz
+        fi
+
+        if [[ ! -f ${prefix}-unpaired-sub_2.fq.gz ]] ; then 
+            lines=`unpigz -p $threads -c ${prefix}-unpaired_2.fq.gz | wc -l`
+            subsample=$((lines/4/10))
+
+            seqtk sample -s 665 ${prefix}-unpaired_2.fq.gz $subsample | pigz -p $threads -c > ${prefix}-unpaired-sub_2.fq.gz
+        fi
+    fi
+done
+
+# activating lordec env
+conda activate lordec_env
 
 # the next step is to run fmlrc to correct
 # clustered FLNC reads
@@ -66,30 +98,15 @@ if [[ ! -d short_read_polish/polished ]] ; then
 
     cd short_read_polish/polished
 
-    trimmedreads=`ls ../trimmed/*.fq.gz | xargs`
-
-    if [[ ! -f msbwt.npy ]] ; then
-        unpigz -p $threads -c $trimmedreads | awk 'NR % 4 == 2' | sort --parallel $threads > reads.sorted.txt
-
-        cat reads.sorted.txt | tr NT TN | ropebwt2 -LR | tr NT TN | fmlrc-convert msbwt.npy
-    fi
-
-    # gunzipping the input file
-    cp ../../quillaja_bucket/quillaja_isoseq/isoseq_refine_cluster/m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta.gz .
-    gunzip m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta.gz
-
-    fmlrc -p $threads \
-          msbwt.npy \
-          m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta \
-          m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster_hq_polished.fasta > fmlrc_out.log 2> fmlrc_err.log
+    trimmedreads=`ls ../trimmed/*-sub_[12].fq.gz | xargs`
           
-    # lordec-correct -T $threads \
-    #                -2 $trimmedreads \
-    #                -k 15 \
-    #                -s 3 \
-    #                -i ../../quillaja_bucket/quillaja_isoseq/isoseq_refine_cluster/m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta.gz \
-    #                -o m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster_hq_polished.fasta \
-    #                > lordec_out.log 2> lordec_err.log
+    lordec-correct -T $threads \
+                   -2 $trimmedreads \
+                   -k 15 \
+                   -s 3 \
+                   -i ../../quillaja_bucket/quillaja_isoseq/isoseq_refine_cluster/m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta.gz \
+                   -o m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster_hq_polished.fasta \
+                   > lordec_out.log 2> lordec_err.log
 
     cd ../..
 fi
