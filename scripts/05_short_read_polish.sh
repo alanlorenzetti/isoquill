@@ -93,13 +93,13 @@ conda activate lordec_env
 
 # the next step is to run fmlrc to correct
 # clustered FLNC reads
-if [[ ! -d short_read_polish/polished ]] ; then 
+if [[ ! -d short_read_polish/polished ]] ; then
     mkdir short_read_polish/polished
 
     cd short_read_polish/polished
 
-    trimmedreads=`ls ../trimmed/*-sub_[12].fq.gz | xargs`
-          
+    trimmedreads=`ls ../trimmed/*-sub_[12].fq.gz | xargs | sed 's/ /,/g'`
+
     lordec-correct -T $threads \
                    -2 $trimmedreads \
                    -k 15 \

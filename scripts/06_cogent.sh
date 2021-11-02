@@ -34,12 +34,10 @@ if [[ ! -d fam_find ]] ; then
     cd fam_find
 
     # copying cluster output file and gunzipping
-    cp /home/alorenzetti/quillaja_bucket/quillaja_isoseq/isoseq_refine_cluster/m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta.gz .
-
-    gunzip m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta.gz
+    cp /home/alorenzetti/quillaja_bucket/quillaja_isoseq/short_read_polish/polished/m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster_hq_polished.fasta .
 
     # setting the appropriate file name
-    mv m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster.hq.fasta isoseq_flnc.fasta
+    mv m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster_hq_polished.fasta isoseq_flnc.fasta
 
     # generating bins
     run_preCluster.py --cpus=$threads > run_preCluster_log.log 2> run_preCluster_err.log
@@ -68,7 +66,7 @@ if [[ ! -d fam_find ]] ; then
 
     # running in parallel 
     # if [[ ! -d reconstruct_log ]] ; then mkdir reconstruct_log ; fi
-    cat reconstruct_cmd.txt | parallel --jobs $threads reconstruct_contig.py quillaja_fam/{} -p {} > reconstruct_log.log 2>&1
+    parallel -a cmd_reconstruct.txt --jobs $threads reconstruct_contig.py quillaja_fam/{} -p {} > reconstruct_log.log 2>&1
 
     # getting a summary of results
     python /home/alorenzetti/compiledPrograms/Cogent/Cogent/helper_scripts/tally_Cogent_contigs_per_family.py quillaja_fam quillaja quillaja_output

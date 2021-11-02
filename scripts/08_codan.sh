@@ -96,7 +96,7 @@ if [[ ! -d codan ]] ; then
                 write.table(x = fin, file = "non_full_non_partial_cds_transcript_list.txt", col.names = F, row.names = F, quote = F)'
 
     # extracting using blastdbcmd
-    blastdbcmd -db Quillaja_adjusted_headers.fa -entry_batch non_full_non_partial_cds_transcript_list.txt | \
+    blastdbcmd -db collapsed_isoforms.fa -entry_batch non_full_non_partial_cds_transcript_list.txt | \
     sed 's/ $//' > non_full_non_partial_cds_transcript_list.fa
     
     cd ..
