@@ -18,17 +18,21 @@ Thumbs.db
 .Rdata
 
 # folders
+.RData
+.Rhistory
+/busco
 /ccs_12_parts
 /clusters_vs_refGen
 /codan
 /cogent_vs_refGen
 /cupcake
-/data
 /fam_find
+/data
 /isoseq_refine_cluster
 /lima
 /plots
 /rem_red
 /remred_vs_refGen
 /vis
-/busco
+/salmon_quant
+/find_tps_p450
