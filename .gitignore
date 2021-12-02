@@ -1,11 +1,3 @@
-# commit and push script
-addCommitPush.sh
-
-# rproj
-*.Rproj
-
-# OS generated files #
-######################
 .DS_Store
 .DS_Store?
 ._*
@@ -17,22 +9,25 @@ Thumbs.db
 .Rhistory
 .Rdata
 
-# folders
-.RData
-.Rhistory
+isoquill.Rproj
+addCommitPush.sh
+
+.gitignore
+
 /busco
 /ccs_12_parts
-/clusters_vs_refGen
 /codan
-/cogent_vs_refGen
+/cogent_vs_refGen_qbra
+/cogent_vs_refGen_qsap
 /cupcake
-/fam_find
 /data
+/decon
+/fam_find
+/find_tps_p450
 /isoseq_refine_cluster
 /lima
 /plots
-/rem_red
-/remred_vs_refGen
-/vis
+/results
 /salmon_quant
-/find_tps_p450
+/short_read_polish
+/vis

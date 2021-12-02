@@ -29,11 +29,20 @@ if [[ ! -d find_tps_p450 ]] ; then mkdir find_tps_p450 ; fi
 # downloading required software
 # and unzipping required dbs
 if [[ ! -d find_tps_p450/TPS ]] ; then
-    cd find_tps_p450
+    cd find_tps_p450jo
 
-    git clone https://github.com/liliane-sntn/TPS
+    #git clone https://github.com/liliane-sntn/TPS
+    mkdir TPS
+    cd TPS
 
-    cd TPS/Tutorial
+    wget -O search_TPS.pl https://raw.githubusercontent.com/liliane-sntn/TPS/main/search_TPS.pl
+
+    mkdir Tutorial
+    cd Tutorial
+
+    wget -O class-specific_hmms.zip https://github.com/liliane-sntn/TPS/blob/main/Tutorial/class-specific_hmms.zip?raw=true
+    wget -O score_tables_dir.zip https://github.com/liliane-sntn/TPS/blob/main/Tutorial/score_tables_dir.zip?raw=true
+    wget -O PFAMs_dir.zip https://github.com/liliane-sntn/TPS/blob/main/Tutorial/PFAMs_dir.zip?raw=true
 
     unzip class-specific_hmms.zip
     unzip score_tables_dir.zip
@@ -46,7 +55,7 @@ fi
 if [[ ! -d find_tps_p450/find_tps ]] ; then
     cd find_tps_p450
 
-    perl TPS/search_TPS.pl -i /home/alorenzetti/quillaja_bucket/quillaja_isoseq/codan/codan_full_pred/PEP_sequences.fa \
+    perl TPS/search_TPS.pl -i ../codan/codan_full_pred/PEP_sequences.fa \
                            -d TPS/Tutorial/class-specific_hmms \
                            -p TPS/Tutorial/PFAMs_dir \
                            -t TPS/Tutorial/score_tables_dir/all_scores.csv \
@@ -66,7 +75,7 @@ if [[ ! -d find_tps_p450/find_p450 ]] ; then
 
     hmmsearch --tblout p450_table.txt \
               -o p450_output.txt \
-              --cpu $threads p450.hmm /home/alorenzetti/quillaja_bucket/quillaja_isoseq/codan/codan_full_pred/PEP_sequences.fa > hmmsearch_out.log 2> hmmsearch_err.log
+              --cpu $threads p450.hmm ../../codan/codan_full_pred/PEP_sequences.fa > hmmsearch_out.log 2> hmmsearch_err.log
 
     cd ../..
 fi

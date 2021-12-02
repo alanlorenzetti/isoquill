@@ -50,4 +50,3 @@ else
         ./ccs/m64168e_210807_154604_ccs.bam
     fi
 fi
-
