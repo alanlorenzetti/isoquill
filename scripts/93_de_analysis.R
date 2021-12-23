@@ -161,6 +161,35 @@ for(i in 1:length(comps)){
                                denominator = comps[[i]][2])
 }
 
+# writing quant dataset imported
+# by the tximport package
+# the counts are
+# "Aggregated transcript counts +
+# average transcript length offsets"
+quant2write = quant$abundance %>%
+  as_tibble(rownames = "gene_id") %>% 
+  left_join(x = .,
+            y = funcatSeq %>% 
+              filter(codan_status == "Full Length") %>% 
+              group_by(gene_id) %>% 
+              summarise(across(.cols = everything(),
+                               .fns = ~ c(.x)[1])),
+            by = "gene_id") %>% 
+  dplyr::select(c(gene_id:V15, interpro_id, interpro_description)) %>% 
+  .[order(quant2write$gene_id %>%
+            str_replace("PB.", "") %>%
+            as.numeric()),]
+
+colnames(quant2write) = c("gene_id",
+                          paste0(colData(vsd)$group, "_",
+                                 colData(vsd)$replicate),
+                          "interpro_id",
+                          "interpro_description")
+
+write.xlsx(x = quant2write,
+           file = "results/quant.xlsx",
+           overwrite = T)
+
 # exploring data ####
 # getting count matrix and
 # applying appropriate normalization

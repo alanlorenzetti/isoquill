@@ -488,5 +488,3 @@ ggsave(filename = "plots/volcano_leaf_and_uv_light_vs_leaf_and_regular_light.png
        dpi = 300,
        height = 5,
        width = 6)
-       
-

@@ -24,12 +24,12 @@ eval "$(conda shell.bash hook)"
 conda activate trimmomatic_env
 
 if [[ ! -d short_read_polish ]] ; then
+    mkdir short_read_polish
+
     # creating adapter fasta according to
     # novogene report
     echo -e ">fiveprime_adap\nAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT" > short_read_polish/adap.fa
     echo -e ">threeprime_adap\nGATCGGAAGAGCACACGTCTGAACTCCAGTCACGGATGACTATCTCGTATGCCGTCTTCTGCTTG" >> short_read_polish/adap.fa
-
-    mkdir short_read_polish
 fi
 
 if [[ ! -d short_read_polish/trimmed ]] ; then

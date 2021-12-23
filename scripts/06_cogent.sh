@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# alorenzetti 20210927
+# alorenzetti 202112
 
 # description ####
 # this script will run cogent

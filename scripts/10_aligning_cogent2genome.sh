@@ -59,3 +59,16 @@ if [[ ! -d cogent_vs_refGen_qbra ]] ; then
     samtools sort -@ $threads -o cogent_vs_refGen_qbra/hq_cogent_vs_refGen_qbra.bam cogent_vs_refGen_qbra/hq_cogent_vs_refGen_qbra.sam
     samtools index -b cogent_vs_refGen_qbra/hq_cogent_vs_refGen_qbra.bam
 fi
+
+# # mapping non collapsed transcripts against Qbra draft genome (deprecated)
+# if [[ ! -d clusters_vs_refGen_qbra ]] ; then
+#     mkdir clusters_vs_refGen_qbra
+
+#     minimap2 -a -x splice -uf -C5 -O6,24 -B4 --secondary=no \
+#              -t $threads \
+#              data/final_gapClosed.fa \
+#              short_read_polish/polished/m64168e_210807_154604_ccs_lima_refine_onlyPolyA_cluster_hq_polished.fasta > clusters_vs_refGen_qbra/hq_clusters_vs_refGen_qbra.sam 2> clusters_vs_refGen_qbra/hq_clusters_vs_refGen_qbra_err.log
+
+#     samtools sort -@ $threads -o clusters_vs_refGen_qbra/hq_clusters_vs_refGen_qbra.bam clusters_vs_refGen_qbra/hq_clusters_vs_refGen_qbra.sam
+#     samtools index -b clusters_vs_refGen_qbra/hq_clusters_vs_refGen_qbra.bam
+# fi
